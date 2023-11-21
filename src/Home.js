@@ -1,38 +1,19 @@
-import { useState, useEffect } from 'react';
+
 import BlogList from './BlogList';
+import useFetch from './useFetch';
 
 const Home = () => {
-    const title =  'All blogs:';
-    const [blogs, setBlogs] = useState(null);
-    const [isPending, setPending] = useState(true);
-    const [error, setError] = useState(null);
-    
+  const title =  'All blogs:';
 
-    //useEffect
-    useEffect(() => {
-      fetch(' http://localhost:8000/blogs')
-      .then(response => {
-        if(!response.ok){
-          throw Error('Could not fetch data from the resource!')
-        }
-        return response.json();
-      })
-      .then(data => {
-        setBlogs(data);
-        setPending(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setPending(false);
-      })
-    }, []);
-    return (
-        <div className="home">
-          { error && <div>{ error }</div>  }
-          { isPending && <div>Loading...</div> }
-          {blogs && <BlogList blogs = { blogs } title = { title } />}
-        </div>
-    );
-  }
+  const { data: blogs, isPending, error} = useFetch('http://localhost:8000/blogs');
+
+  return (
+      <div className="home">
+        { error && <div>{ error }</div>  }
+        { isPending && <div>Loading...</div> }
+        { blogs && <BlogList blogs = { blogs } title = { title } />}
+      </div>
+  );
+}
  
 export default Home;
